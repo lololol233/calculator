@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-color: #cae5e6;
+            font-family:'Courier New', Courier, monospace;
+        }
+        table{
+            border-collapse: collapse;
+            width: 300px;
+            height: 500px;
+            font-size: 2rem;
+            background-color: #374352;
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+            margin: auto;
+            box-shadow: 0px 5px 20px #374352;
+            position: relative;
+            top: 15vh;
+        }
+        td{
+            border: gray 1px solid;
+        }
+        #text{
+            text-align: right;
+            font-size: 3.5rem;
+            display: block;
+            background-color: #3a4655;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+        .grey{
+            color: gray;
+        }
+        #orange{
+            color: rgb(222, 84, 4);
+        }
+        #cal{
+            font-size: 2rem;
+            line-height: 0px;
+            color: gray;
+            display: block;
+            text-align: right;
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <td colspan="4"><span id="cal"></span><br><span id="text">0</span></td>
+        </tr>
+
+        <tr class="grey">
+            <td id="orange">C</td>
+            <td>/</td>
+            <td>*</td>
+            <td>←</td>
+        </tr>
+
+        <tr>
+            <td>7</td>
+            <td>8</td>
+            <td>9</td>
+            <td class="grey">-</td>
+        </tr>
+
+        <tr>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+            <td class="grey">+</td>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td rowspan="2" class="grey">=</td>
+
+        </tr>
+
+        <tr>
+            <td colspan="2">0</td>
+            <td>.</td>
+
+        </tr>
+    </table>
+    <script>
+const text = document.getElementById('text')
+const cal = document.getElementById('cal')
+const btns =document.querySelectorAll('td:not(#text)')
+
+let reset = false
+for (const btn of btns){
+    btn.onclick=() =>{
+        const btnText = btn.innerText
+        console.log(btnText)
+        if (btnText==='←'){
+            cal.innerText = cal.innerText.slice(0,-1)
+        }
+        else if (btnText === '='){
+            text.innerText = eval(cal.innerText)
+            reset = true
+        }
+        else if (btnText === 'C'){
+            text.innerText ='0'
+            cal.innerText =''
+        }
+        else{
+            if (cal.innerText === '-' && isNaN(parseInt(btnText)) ) return
+
+            if (cal.innerText !== '0' && !reset){
+                cal.innerText += btnText
+                text.innerText='0'
+            }
+            else if (!['+', '*', '/','←'].includes(btnText) || reset){
+                cal.innerText = btnText
+                reset = false
+            }
+        }
+    }
+}
+
+document.onkeydown = event =>{
+    const btnText = event.key
+    if (btnText==='Backspace'){
+        cal.innerText = cal.innerText.slice(0,-1)
+        }
+        if (btnText === '=' || btnText ==='Enter' ){
+            text.innerText = eval(cal.innerText)
+            reset = true
+        }
+        else if (btnText === 'C'){
+            text.innerText ='0'
+            cal.innerText =''
+        }
+        else{
+            if (cal.innerText === '-' && isNaN(parseInt(btnText))) return
+            if (!btnText.match(/[0-9]/g) && !['+', '*', '/', '-'].includes(btnText)) return
+
+            if (cal.innerText !== '0' && !reset){
+                text.innerText='0'
+                cal.innerText += btnText
+            }
+            else if (!['+', '*', '/'].includes(btnText) || reset){
+                cal.innerText = btnText
+                reset = false
+            }
+        }
+    }
+
+
+
+    </script>
+</body>
+</html>
