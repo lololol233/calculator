@@ -23,10 +23,20 @@
             box-shadow: 0px 5px 20px #374352;
             position: relative;
             top: 15vh;
+            /* border: none; */
+
         }
         td{
             border: gray 1px solid;
         }
+        /* /* td:first-child{
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+} */
+/* td:last-child{
+    /* border-top-right-radius: 10px; 
+    border-bottom-right-radius: 10px;
+}*/
         #text{
             text-align: right;
             font-size: 3.5rem;
@@ -49,19 +59,43 @@
             text-align: right;
             margin-right: 20px;
         }
+
+        /* 按鍵滑鼠懸浮效果 */
+        td:hover{
+            background-color: #8493a6;
+            cursor: default;
+            transition-delay: 0.2s;
+            transition-duration: 0.8s;
+        }
+        .grey:hover{
+            color: black;
+            transition-delay: 0.2s;
+            transition-duration: 0.8s;
+        }
+
+        #none:hover{
+            background-color:#3a4655;
+        }
+
+        .one{
+            background-color:  #8493a6;
+        }
+        audio{
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <table>
+    <table border="0">
         <tr>
-            <td colspan="4"><span id="cal"></span><br><span id="text">0</span></td>
+            <td colspan="4" id="none"><span id="cal"></span><br><span id="text">0</span></td>
         </tr>
 
-        <tr class="grey">
-            <td id="orange">C</td>
-            <td>/</td>
-            <td>*</td>
-            <td>←</td>
+        <tr>
+            <td  class="grey" id="orange">C</td>
+            <td  class="grey">/</td>
+            <td  class="grey">*</td>
+            <td  class="grey">←</td>
         </tr>
 
         <tr>
@@ -79,10 +113,10 @@
         </tr>
 
         <tr>
-            <td>1</td>
+            <td id="one">1</td>
             <td>2</td>
             <td>3</td>
-            <td rowspan="2" class="grey">=</td>
+            <td rowspan="2" class="grey" id="enter">=</td>
 
         </tr>
 
@@ -92,54 +126,74 @@
 
         </tr>
     </table>
+    <audio src="/key.mp3" id="sound"></audio>
+    <audio src="/bell.mp3" id="sound2"></audio>
+
+
     <script>
+
 const text = document.getElementById('text')
 const cal = document.getElementById('cal')
 const btns =document.querySelectorAll('td:not(#text)')
+const sound = document.getElementById('sound')
+const sound2 = document.getElementById('sound2')
+document.getElementById('sound2').playbackRate = 2
+let enter = document.getElementById('enter')
+
 
 let reset = false
 for (const btn of btns){
     btn.onclick=() =>{
         const btnText = btn.innerText
+        
         console.log(btnText)
         if (btnText==='←'){
             cal.innerText = cal.innerText.slice(0,-1)
+            sound.play()
         }
         else if (btnText === '='){
             text.innerText = eval(cal.innerText)
+            sound2.play()
             reset = true
         }
         else if (btnText === 'C'){
             text.innerText ='0'
             cal.innerText =''
+            sound.play()
         }
         else{
             if (cal.innerText === '-' && isNaN(parseInt(btnText)) ) return
 
             if (cal.innerText !== '0' && !reset){
+                sound.play()
                 cal.innerText += btnText
-                text.innerText='0'
+                text.innerText = '0'
+                
             }
             else if (!['+', '*', '/','←'].includes(btnText) || reset){
                 cal.innerText = btnText
+                sound.play()
                 reset = false
             }
         }
     }
 }
-
+const one = document.getElementById('one')
 document.onkeydown = event =>{
     const btnText = event.key
     if (btnText==='Backspace'){
         cal.innerText = cal.innerText.slice(0,-1)
+        sound.play()
         }
         if (btnText === '=' || btnText ==='Enter' ){
             text.innerText = eval(cal.innerText)
+            sound2.play()
             reset = true
         }
         else if (btnText === 'C'){
             text.innerText ='0'
             cal.innerText =''
+            sound.play()
         }
         else{
             if (cal.innerText === '-' && isNaN(parseInt(btnText))) return
@@ -148,14 +202,23 @@ document.onkeydown = event =>{
             if (cal.innerText !== '0' && !reset){
                 text.innerText='0'
                 cal.innerText += btnText
+                sound.play()
             }
             else if (!['+', '*', '/'].includes(btnText) || reset){
                 cal.innerText = btnText
+                sound.play()
                 reset = false
             }
+
+            if (btnText === '1'){
+    one.classList.add('one')
+}
+else{
+    one.classList.remove('one')
+}
         }
     }
-
+    
 
 
     </script>
